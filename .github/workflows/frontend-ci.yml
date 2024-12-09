@@ -5,7 +5,7 @@ on:
     branches:
       - main
     paths:
-      - 'frontend/**'
+      - 'starter/frontend/**'
   workflow_dispatch:
 
 jobs:
@@ -23,12 +23,12 @@ jobs:
 
       - name: Install dependencies
         run: |
-          cd frontend
+          cd starter/frontend
           npm ci
 
       - name: Run ESLint
         run: |
-          cd frontend
+          cd starter/frontend
           npm run lint
 
   test:
@@ -45,12 +45,12 @@ jobs:
 
       - name: Install dependencies
         run: |
-          cd frontend
+          cd starter/frontend
           npm ci
 
       - name: Run Tests
         run: |
-          cd frontend
+          cd starter/frontend
           npm test
 
   build:
@@ -70,6 +70,6 @@ jobs:
 
       - name: Install dependencies and build
         run: |
-          cd frontend
+          cd starter/frontend
           npm ci
           npm run build

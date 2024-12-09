@@ -5,7 +5,7 @@ on:
     branches:
       - main
     paths:
-      - 'backend/**'
+      - 'starter/backend/**'
   workflow_dispatch:
 
 jobs:
@@ -30,7 +30,7 @@ jobs:
             ${{ runner.os }}-pip-
 
       - name: Install dependencies
-        run: pip install -r backend/requirements.txt
+        run: pip install -r starter/backend/requirements.txt
 
       - name: Run flake8
         run: flake8 backend --exit-zero

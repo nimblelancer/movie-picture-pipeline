@@ -3,7 +3,7 @@ name: Backend CI
 on:
   pull_request:
     paths:
-      - 'backend/**'
+      - 'starter/backend/**'
   workflow_dispatch:
 
 jobs:
@@ -46,7 +46,7 @@ jobs:
             ${{ runner.os }}-pip-
 
       - name: Install dependencies
-        run: pip install -r backend/requirements.txt
+        run: pip install -r starter/backend/requirements.txt
 
       - name: Run pytest
         run: pytest backend/tests
