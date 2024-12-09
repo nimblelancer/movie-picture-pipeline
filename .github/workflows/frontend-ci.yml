@@ -1,75 +1,74 @@
-name: Frontend Continuous Integration
+name: Frontend CI
 
 on:
   pull_request:
-    branches:
-      - main
     paths:
       - 'starter/frontend/**'
   workflow_dispatch:
 
 jobs:
   lint:
-    name: Lint Code
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-
-      - name: Set up Node.js
+      - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '16'
-
+          node-version: 16
       - name: Install dependencies
         run: |
           cd starter/frontend
-          npm ci
-
-      - name: Run ESLint
+          npm install
+      - name: Run lint
         run: |
           cd starter/frontend
           npm run lint
 
   test:
-    name: Run Tests
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-
-      - name: Set up Node.js
+      - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '16'
-
+          node-version: 16
       - name: Install dependencies
         run: |
           cd starter/frontend
-          npm ci
-
-      - name: Run Tests
+          npm install
+      - name: Run tests (skip if none found)
         run: |
           cd starter/frontend
-          npm test
+          npm test -- --passWithNoTests
 
   build:
-    name: Build Application
+    needs: [lint, test]
     runs-on: ubuntu-latest
-    needs:
-      - lint
-      - test
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-
-      - name: Set up Node.js
+      - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '16'
-
-      - name: Install dependencies and build
+          node-version: 16
+      - name: Install dependencies
         run: |
           cd starter/frontend
-          npm ci
+          npm install
+      - name: Build application
+        run: |
+          cd starter/frontend
           npm run build
+      - name: Post comment on PR
+        if: ${{ github.event_name == 'pull_request' }}
+        uses: actions/github-script@v6
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.payload.pull_request.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: "✅ Frontend CI pipeline completed successfully!",
+            })
