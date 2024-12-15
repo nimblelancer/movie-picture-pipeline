@@ -4,7 +4,11 @@ on:
   pull_request:
     paths:
       - 'starter/frontend/**'
-  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - 'starter/frontend/**'
 
 jobs:
   lint:
@@ -15,7 +19,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 16
+          node-version: '16'
       - name: Install dependencies
         run: |
           cd starter/frontend
@@ -33,42 +37,12 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 16
+          node-version: '16'
       - name: Install dependencies
         run: |
           cd starter/frontend
           npm install
-      - name: Run tests (skip if none found)
+      - name: Run tests
         run: |
           cd starter/frontend
-          npm test -- --passWithNoTests
-
-  build:
-    needs: [lint, test]
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: 16
-      - name: Install dependencies
-        run: |
-          cd starter/frontend
-          npm install
-      - name: Build application
-        run: |
-          cd starter/frontend
-          npm run build
-      - name: Post comment on PR
-        if: ${{ github.event_name == 'pull_request' }}
-        uses: actions/github-script@v6
-        with:
-          script: |
-            github.rest.issues.createComment({
-              issue_number: context.payload.pull_request.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: "✅ Frontend CI pipeline completed successfully!",
-            })
+          npm test -- --watchAll=false
