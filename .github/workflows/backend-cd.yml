@@ -9,44 +9,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  lint:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-      - name: Setup Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.9'
-      - name: Install dependencies
-        run: |
-          cd starter/backend
-          pip install -r requirements.txt
-      - name: Run lint
-        run: |
-          cd starter/backend
-          pylint **/*.py --exit-zero
-
-  test:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-      - name: Setup Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.9'
-      - name: Install dependencies
-        run: |
-          cd starter/backend
-          pip install -r requirements.txt
-      - name: Run tests (skip if none found)
-        run: |
-          cd starter/backend
-          pytest --disable-warnings || true
-
   build:
-    needs: [lint, test]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -68,9 +31,7 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
       - name: Deploy to Kubernetes
         run: |
-          # Deploy logic here
-          echo "Deployed backend to Kubernetes with image tagged as ${{ github.sha }}"
+          # Replace with your Kubernetes deployment script
+          echo "Deployed backend to Kubernetes with image tag ${{ github.sha }}"
