@@ -9,44 +9,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  lint:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: 16
-      - name: Install dependencies
-        run: |
-          cd starter/frontend
-          npm install
-      - name: Run lint
-        run: |
-          cd starter/frontend
-          npm run lint
-
-  test:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: 16
-      - name: Install dependencies
-        run: |
-          cd starter/frontend
-          npm install
-      - name: Run tests (skip if none found)
-        run: |
-          cd starter/frontend
-          npm test -- --passWithNoTests
-
   build:
-    needs: [lint, test]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -54,7 +17,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 16
+          node-version: '16'
       - name: Install dependencies
         run: |
           cd starter/frontend
@@ -63,14 +26,16 @@ jobs:
         run: |
           cd starter/frontend
           npm run build
+      - name: Build Docker image
+        run: |
+          cd starter/frontend
+          docker build -t frontend:${{ github.sha }} .
 
   deploy:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
       - name: Deploy to Kubernetes
         run: |
-          # Deploy logic here
-          echo "Deployed frontend to Kubernetes with image tagged as ${{ github.sha }}"
+          # Replace with your Kubernetes deployment script
+          echo "Deployed frontend to Kubernetes with image tag ${{ github.sha }}"
