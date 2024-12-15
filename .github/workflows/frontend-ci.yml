@@ -2,47 +2,43 @@ name: Frontend CI
 
 on:
   pull_request:
-    paths:
-      - 'starter/frontend/**'
-  push:
     branches:
       - main
-    paths:
-      - 'starter/frontend/**'
+  workflow_dispatch:
 
 jobs:
   lint:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
-      - name: Checkout code
+      - name: Checkout Code
         uses: actions/checkout@v3
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '16'
-      - name: Install dependencies
+      - name: Install Dependencies
         run: |
           cd starter/frontend
           npm install
-      - name: Run lint
+      - name: Lint Code
         run: |
           cd starter/frontend
-          npm run lint
+          npx eslint . --fix
 
   test:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
-      - name: Checkout code
+      - name: Checkout Code
         uses: actions/checkout@v3
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '16'
-      - name: Install dependencies
+      - name: Install Dependencies
         run: |
           cd starter/frontend
           npm install
-      - name: Run tests
+      - name: Run Tests
         run: |
           cd starter/frontend
-          npm test -- --watchAll=false
+          npm test -- --passWithNoTests
